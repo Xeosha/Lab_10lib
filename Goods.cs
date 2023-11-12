@@ -45,16 +45,31 @@ namespace Lab_10lib
             Name = name;
             Price = price;
             Weight = weight;
-            Tags = new List<string>();
+            Tags = CreateTag();
         }
 
         public Goods() => RandomInit();
 
+        List<string> CreateTag()
+        {
+            var rnd = new Random();
+            Tags = new List<string>();
+
+            var size = rnd.NextInt64(1, 3);
+            for (int i = 0; i < size; i++)
+                Tags.Add(Guid.NewGuid().ToString());
+
+            return Tags;
+        }
         protected virtual string GetString()
         {
-            return $"Название товара: {Name}\n" +
-                    $"Цена: {Price}\n" +
-                    $"Вес: {Weight}";
+            var row = $"Название товара: {Name}\n" +
+                      $"Цена: {Price}\n" +
+                      $"Вес: {Weight}";
+
+            var tagsRow = string.Join(", ", Tags);
+
+            return row + "\nТеги: " + tagsRow;
         }
 
         // Вывод информации (виртуальный метод)
@@ -70,6 +85,9 @@ namespace Lab_10lib
                               $"Цена: {Price}\n" +
                               $"Вес: {Weight}");
 
+            var tagsRow = string.Join(", ", Tags);
+
+            Console.WriteLine("Теги: " + tagsRow);
         }
 
         // Инициализация
@@ -90,7 +108,9 @@ namespace Lab_10lib
             Name = "Товар_" + rnd.Next(1, 10);
             Price = Math.Round(rnd.NextDouble() * 100, 2);
             Weight = Math.Round(rnd.NextDouble() * 100, 2);
-            Tags = new List<string>();
+
+            Tags = CreateTag();
+            
         }
 
         public override bool Equals(object? obj)
@@ -110,7 +130,7 @@ namespace Lab_10lib
 
         public virtual object Clone()
         {
-            var newGoods = new Goods("Клон_" + Name, Price, Weight);
+            var newGoods = (Goods)this.MemberwiseClone();
             // We need to create new instances of any objects or arrays in Goods.
             newGoods.Tags = new List<string>(Tags);
             return newGoods;

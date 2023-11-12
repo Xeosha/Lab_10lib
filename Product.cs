@@ -35,6 +35,9 @@ namespace Lab_10lib
                               $"Вес: {Weight}\n" +
                               $"Срок годности кончается: {ExpirationDate}"
                               );
+            var tagsRow = string.Join(", ", Tags);
+
+            Console.WriteLine("Теги: " + tagsRow);
 
         }
 

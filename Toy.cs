@@ -35,6 +35,9 @@ namespace Lab_10lib
                               $"Вес: {Weight}\n" +
                               $"Возрастное ограничение: {AgeRestriction}"
                               );
+            var tagsRow = string.Join(", ", Tags);
+
+            Console.WriteLine("Теги: " + tagsRow);
         }
 
         public override void Init()
