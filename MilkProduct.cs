@@ -7,25 +7,30 @@ using System.Threading.Tasks;
 
 namespace Lab_10lib
 {
-    public class MilkProduct : Product, IExecutable
+    public class MilkProduct : Product, IInit, ICloneable, IComparable
     {
         double FatСontent { get; set; }
-        public MilkProduct(string name, double price, double weight, DateTime expirationDate, double fatContent) : base(name, price, weight, expirationDate)
+        public MilkProduct(string? name, double price, double weight, DateTime expirationDate, double fatContent) 
+            : base(name, price, weight, expirationDate)
         {
             FatСontent = fatContent;
         }
 
         public MilkProduct() => RandomInit();
 
+        protected override string GetString()
+        {
+            return base.GetString() + $"\nЖирность: {FatСontent}";
+        }
+
         public override void Show()
         {
-            base.Show();
-            Console.WriteLine($"Жирность: {FatСontent}");
+            Console.WriteLine(GetString());
         }
 
         public new void SelfShow()
         {
-            Console.WriteLine($"Товар: {Name}\n" +
+            Console.WriteLine($"Название товара: {Name}\n" +
                               $"Цена: {Price}\n" +
                               $"Вес: {Weight}\n" +
                               $"Срок годности кончается через: {ExpirationDate}\n" +
@@ -36,6 +41,7 @@ namespace Lab_10lib
         {
             base.Init();
             FatСontent = EnterKeybord.TypeDouble("Введите жирность: ");
+
         }
         public override void RandomInit()
         {
@@ -43,5 +49,16 @@ namespace Lab_10lib
             var rnd = new Random();
             FatСontent = Math.Round(rnd.NextDouble() * 100, 2);
         }
+
+        public override object Clone()
+        {
+            return new MilkProduct(Name, Price, Weight, ExpirationDate, FatСontent);
+        }
+
+        public override MilkProduct ShallowCopy()
+        {
+            return (MilkProduct)MemberwiseClone();
+        }
+
     }
 }

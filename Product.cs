@@ -7,26 +7,30 @@ using System.Threading.Tasks;
 
 namespace Lab_10lib
 {
-    public class Product : Goods, IExecutable
+    public class Product : Goods, IInit, ICloneable, IComparable
     {
         public DateTime ExpirationDate { get; set; }
 
-        public Product(string name, double price, double weight, DateTime expirationDate) : base(name, price, weight)
+        public Product(string? name, double price, double weight, DateTime expirationDate) 
+            : base(name, price, weight)
         {
             ExpirationDate = expirationDate;
         }
 
         public Product() => RandomInit();
 
+        protected override string GetString()
+        {
+            return base.GetString() + $"\nСрок годности кончается: {ExpirationDate}";
+        }
         public override void Show()
         {
-            base.Show();
-            Console.WriteLine($"Срок годности кончается: {ExpirationDate}");
+            Console.WriteLine(GetString());
         }
 
         public new void SelfShow()
         {
-            Console.WriteLine($"Товар: {Name}\n" +
+            Console.WriteLine($"Название товара: {Name}\n" +
                               $"Цена: {Price}\n" +
                               $"Вес: {Weight}\n" +
                               $"Срок годности кончается: {ExpirationDate}"
@@ -43,6 +47,7 @@ namespace Lab_10lib
             var minute = EnterKeybord.TypeInteger("Введите минуты: ", 0, 60);
             var second = EnterKeybord.TypeInteger("Введите секунды: ", 0, 60);
             ExpirationDate = DateTime.Now + new TimeSpan(year, hour, minute, second);
+
         }
         public override void RandomInit()
         {
@@ -56,6 +61,15 @@ namespace Lab_10lib
 
             ExpirationDate = currentDateTime + randomTimeSpan;
         }
+        public override object Clone()
+        {
+            return new Product(Name, Price, Weight, ExpirationDate);
+        }
 
+        public override Product ShallowCopy()
+        {
+            return (Product)MemberwiseClone();
+        }
+      
     }
 }
