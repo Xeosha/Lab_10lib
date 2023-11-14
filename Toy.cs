@@ -9,8 +9,19 @@ namespace Lab_10lib
 {
     public class Toy : Goods, IInit, ICloneable, IComparable
     {
-        public int AgeRestriction { get; set; }
-        public Toy(string? name, double price, double weight, int ageRestriction) 
+        private int ageRestricition;
+        public int AgeRestriction
+        {
+            get => ageRestricition;
+            set
+            {  
+                if (value < 0)
+                    Console.WriteLine("Возраст не может быть меньше 0");
+                else
+                    ageRestricition = value;           
+            }
+        }
+        public Toy(string name, double price, double weight, int ageRestriction) 
             : base(name, price, weight)
         {
             AgeRestriction = ageRestriction;
@@ -18,7 +29,7 @@ namespace Lab_10lib
 
         public Toy() => RandomInit();
 
-        protected override string GetString()
+        public override string GetString()
         {
             return base.GetString() + $"\nВозрастное ограничение: {AgeRestriction}";
         }
@@ -55,7 +66,9 @@ namespace Lab_10lib
 
         public override object Clone()
         {
-            return new Toy(Name, Price, Weight, AgeRestriction);
+            var newToy = (Toy)this.MemberwiseClone();
+            newToy.Tags = new List<string>(Tags);
+            return newToy;
         }
         public override Toy ShallowCopy()
         {

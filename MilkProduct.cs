@@ -9,8 +9,19 @@ namespace Lab_10lib
 {
     public class MilkProduct : Product, IInit, ICloneable, IComparable
     {
-        double FatСontent { get; set; }
-        public MilkProduct(string? name, double price, double weight, DateTime expirationDate, double fatContent) 
+        private double fatContent;
+        public double FatСontent
+        {
+            get => fatContent;
+            set
+            {
+                if (value < 0)
+                    Console.WriteLine("Жирность не может быть меньше 0");
+                else
+                    fatContent = value;
+            }
+        }
+        public MilkProduct(string name, double price, double weight, DateTime expirationDate, double fatContent) 
             : base(name, price, weight, expirationDate)
         {
             FatСontent = fatContent;
@@ -18,7 +29,7 @@ namespace Lab_10lib
 
         public MilkProduct() => RandomInit();
 
-        protected override string GetString()
+        public override string GetString()
         {
             return base.GetString() + $"\nЖирность: {FatСontent}";
         }
@@ -43,7 +54,7 @@ namespace Lab_10lib
         public override void Init()
         {
             base.Init();
-            FatСontent = EnterKeybord.TypeDouble("Введите жирность: ");
+            FatСontent = EnterKeybord.TypeDouble("Введите жирность: ", 0, 100);
 
         }
         public override void RandomInit()
@@ -55,7 +66,9 @@ namespace Lab_10lib
 
         public override object Clone()
         {
-            return new MilkProduct(Name, Price, Weight, ExpirationDate, FatСontent);
+            var newProduct = (MilkProduct)this.MemberwiseClone();
+            newProduct.Tags = new List<string>(Tags);
+            return newProduct;
         }
 
         public override MilkProduct ShallowCopy()

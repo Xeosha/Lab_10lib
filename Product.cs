@@ -11,7 +11,7 @@ namespace Lab_10lib
     {
         public DateTime ExpirationDate { get; set; }
 
-        public Product(string? name, double price, double weight, DateTime expirationDate) 
+        public Product(string name, double price, double weight, DateTime expirationDate) 
             : base(name, price, weight)
         {
             ExpirationDate = expirationDate;
@@ -19,7 +19,7 @@ namespace Lab_10lib
 
         public Product() => RandomInit();
 
-        protected override string GetString()
+        public override string GetString()
         {
             return base.GetString() + $"\nСрок годности кончается: {ExpirationDate}";
         }
@@ -66,7 +66,9 @@ namespace Lab_10lib
         }
         public override object Clone()
         {
-            return new Product(Name, Price, Weight, ExpirationDate);
+            var newProduct = (Product)this.MemberwiseClone();
+            newProduct.Tags = new List<string>(Tags);
+            return newProduct;
         }
 
         public override Product ShallowCopy()

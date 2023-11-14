@@ -3,19 +3,13 @@ using System.Net.Http.Headers;
 
 namespace Lab_10lib
 {
-    // Суммарная стоимость товара заданного наименования.
-
-    // Количество товара заданного наименования
-
-    // Самая дорогая и самая дешевая игрушка в магазине(наименование и стоимость).
-
     public class Goods : IInit, ICloneable, IComparable
     {
         double price;
         double weight;
 
         public List<string> Tags { get; set; } // для показа различия между поверх и полным копированием
-        public string? Name { get; set; }
+        public string Name { get; set; }
         public double Price
         {
             get => price;
@@ -30,7 +24,7 @@ namespace Lab_10lib
 
         public double Weight
         {
-            get => weight; 
+            get => weight;
             set
             {
                 if (value < 0)
@@ -40,7 +34,7 @@ namespace Lab_10lib
             }
         }
 
-        public Goods(string? name, double price, double weight)
+        public Goods(string name, double price, double weight)
         {
             Name = name;
             Price = price;
@@ -48,20 +42,28 @@ namespace Lab_10lib
             Tags = CreateTag();
         }
 
-        public Goods() => RandomInit();
-
-        List<string> CreateTag()
+        public Goods()
         {
             var rnd = new Random();
-            Tags = new List<string>();
+            Name = "Товар_" + rnd.Next(1, 10);
+            Price = Math.Round(rnd.NextDouble() * 100, 2);
+            Weight = Math.Round(rnd.NextDouble() * 100, 2);
+
+            Tags = CreateTag();
+        }
+
+        private static List<string> CreateTag()
+        {
+            var rnd = new Random();
+            var tags = new List<string>();
 
             var size = rnd.NextInt64(1, 3);
             for (int i = 0; i < size; i++)
-                Tags.Add(Guid.NewGuid().ToString());
+                tags.Add(Guid.NewGuid().ToString());
 
-            return Tags;
+            return tags;
         }
-        protected virtual string GetString()
+        public virtual string GetString()
         {
             var row = $"Название товара: {Name}\n" +
                       $"Цена: {Price}\n" +
@@ -94,23 +96,22 @@ namespace Lab_10lib
         public virtual void Init()
         {
             Console.Write("Введите название товара: ");
-            Name = Console.ReadLine();
+            Name = Console.ReadLine() ?? "Danil";
 
-            Price = EnterKeybord.TypeDouble("Введите цену: ");
+            Price = EnterKeybord.TypeDouble("Введите цену: ", 0);
 
-            Weight = EnterKeybord.TypeDouble("Введите вес: ");
+            Weight = EnterKeybord.TypeDouble("Введите вес: ", 0);
         }
 
         // Рандом
         public virtual void RandomInit()
         {
-            var rnd = new Random(); 
+            var rnd = new Random();
             Name = "Товар_" + rnd.Next(1, 10);
             Price = Math.Round(rnd.NextDouble() * 100, 2);
             Weight = Math.Round(rnd.NextDouble() * 100, 2);
 
             Tags = CreateTag();
-            
         }
 
         public override bool Equals(object? obj)
@@ -119,19 +120,17 @@ namespace Lab_10lib
             {
                 return Name == other.Name && Price == other.Price && Weight == other.Weight;
             }
-            return false; 
-            
+            return false;    
         }
 
         public override int GetHashCode()
         {
-            return ToString() != null ? GetHashCode() : 0;
+            return HashCode.Combine(Name, Price, Weight);
         }
 
         public virtual object Clone()
         {
             var newGoods = (Goods)this.MemberwiseClone();
-            // We need to create new instances of any objects or arrays in Goods.
             newGoods.Tags = new List<string>(Tags);
             return newGoods;
         }
@@ -163,10 +162,10 @@ namespace Lab_10lib
                 return 0;
             }
         }
-
+                
         public override string ToString()
         {
-            return base.ToString() + ":\n" + GetString();
+            return GetString();
         }
 
     }
